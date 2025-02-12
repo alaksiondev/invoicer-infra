@@ -14,6 +14,9 @@ If you are to use the default port configuration please assure the following por
 - 9090: Prometheus
 - 3000: Grafana
 - 4000: Nginx
+- 9200: ElasticSearch
+- 5000: Logstash
+- 5601: Kibana
 
 ## Environment Variables
 Invoicer infrastructure is powered by a DockerCompose file and some configurations have been moved into env variables. To ensure the deploy works as expected be sure to setup the following env:
