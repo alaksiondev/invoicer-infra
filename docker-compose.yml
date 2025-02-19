@@ -1,6 +1,6 @@
 services:
   invoicer_base: &invoicer_base
-    image: alaksion/invoicer-api:0.0.9
+    image: alaksion/invoicer-api:0.0.10
     environment:
       INVOICER_DB_USERNAME: $INVOICER_DB_USERNAME
       INVOICER_DB_PASSWORD: $INVOICER_DB_PASSWORD
@@ -104,7 +104,7 @@ services:
     restart: always
     image: docker.elastic.co/logstash/logstash:7.15.1
     ports:
-      - "5000:5000"
+      - "5001:5000"
     networks:
       - invoicer-network
     volumes:
