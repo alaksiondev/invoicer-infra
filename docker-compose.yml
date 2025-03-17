@@ -1,6 +1,6 @@
 services:
   invoicer_base: &invoicer_base
-    image: alaksion/invoicer-api:0.0.12
+    image: alaksion/invoicer-api:0.0.13
     environment:
       INVOICER_DB_USERNAME: $INVOICER_DB_USERNAME
       INVOICER_DB_PASSWORD: $INVOICER_DB_PASSWORD
@@ -88,41 +88,41 @@ services:
       - redis_data:/data
     networks:
       - invoicer-network
-  invoicer-elasticsearch:
-    container_name: invoicer-elasticsearch
-    restart: always
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.1
-    ports:
-      - "9200:9200"
-    networks:
-      - invoicer-network
-    volumes:
-      - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - elastisearch_data:/usr/share/elasticsearch/data
-  invoicer-logstash:
-    container_name: invoicer-logstash
-    restart: always
-    image: docker.elastic.co/logstash/logstash:7.15.1
-    ports:
-      - "5001:5000"
-    networks:
-      - invoicer-network
-    volumes:
-      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-    depends_on:
-      - invoicer-elasticsearch
-  invoicer-kibana:
-    container_name: invoicer-kibana
-    restart: always
-    image: docker.elastic.co/kibana/kibana:7.15.1
-    ports:
-      - "5601:5601"
-    networks:
-      - invoicer-network
-    depends_on:
-      - invoicer-elasticsearch
-    volumes:
-      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+  # invoicer-elasticsearch:
+  #   container_name: invoicer-elasticsearch
+  #   restart: always
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.15.1
+  #   ports:
+  #     - "9200:9200"
+  #   networks:
+  #     - invoicer-network
+  #   volumes:
+  #     - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+  #     - elastisearch_data:/usr/share/elasticsearch/data
+  # invoicer-logstash:
+  #   container_name: invoicer-logstash
+  #   restart: always
+  #   image: docker.elastic.co/logstash/logstash:7.15.1
+  #   ports:
+  #     - "5001:5000"
+  #   networks:
+  #     - invoicer-network
+  #   volumes:
+  #     - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+  #   depends_on:
+  #     - invoicer-elasticsearch
+  # invoicer-kibana:
+  #   container_name: invoicer-kibana
+  #   restart: always
+  #   image: docker.elastic.co/kibana/kibana:7.15.1
+  #   ports:
+  #     - "5601:5601"
+  #   networks:
+  #     - invoicer-network
+  #   depends_on:
+  #     - invoicer-elasticsearch
+  #   volumes:
+  #     - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
 volumes:
   postgres-data:
   redis_data:
