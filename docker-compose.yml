@@ -88,45 +88,61 @@ services:
       - redis_data:/data
     networks:
       - invoicer-network
-  # invoicer-elasticsearch:
-  #   container_name: invoicer-elasticsearch
-  #   restart: always
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.15.1
-  #   ports:
-  #     - "9200:9200"
-  #   networks:
-  #     - invoicer-network
-  #   volumes:
-  #     - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-  #     - elastisearch_data:/usr/share/elasticsearch/data
-  # invoicer-logstash:
-  #   container_name: invoicer-logstash
-  #   restart: always
-  #   image: docker.elastic.co/logstash/logstash:7.15.1
-  #   ports:
-  #     - "5001:5000"
-  #   networks:
-  #     - invoicer-network
-  #   volumes:
-  #     - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-  #   depends_on:
-  #     - invoicer-elasticsearch
-  # invoicer-kibana:
-  #   container_name: invoicer-kibana
-  #   restart: always
-  #   image: docker.elastic.co/kibana/kibana:7.15.1
-  #   ports:
-  #     - "5601:5601"
-  #   networks:
-  #     - invoicer-network
-  #   depends_on:
-  #     - invoicer-elasticsearch
-  #   volumes:
-  #     - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+  invoicer-elasticsearch:
+    container_name: invoicer-elasticsearch
+    restart: always
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.1
+    ports:
+      - "9200:9200"
+    networks:
+      - invoicer-network
+    volumes:
+      - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - elastisearch_data:/usr/share/elasticsearch/data
+  invoicer-logstash:
+    container_name: invoicer-logstash
+    restart: always
+    image: docker.elastic.co/logstash/logstash:7.15.1
+    ports:
+      - "5001:5000"
+    networks:
+      - invoicer-network
+    volumes:
+      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    depends_on:
+      - invoicer-elasticsearch
+  invoicer-kibana:
+    container_name: invoicer-kibana
+    restart: always
+    image: docker.elastic.co/kibana/kibana:7.15.1
+    ports:
+      - "5601:5601"
+    networks:
+      - invoicer-network
+    depends_on:
+      - invoicer-elasticsearch
+    volumes:
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+  invoicer-minio:
+    image: minio/minio:latest
+    container_name: invoicer-minion
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: $MINIO_USER  
+      MINIO_ROOT_PASSWORD: $MINIO_PASSWORD
+    volumes:
+      - ./minio_data:/data
+    ports:
+      - "9000:9000"  
+      - "9001:9001"
+    networks:
+      - invoicer-network
 volumes:
   postgres-data:
   redis_data:
   elastisearch_data:
+  minio_data:
 networks:
   invoicer-network:
     driver: bridge
