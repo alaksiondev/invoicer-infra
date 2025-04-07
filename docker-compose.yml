@@ -1,6 +1,6 @@
 services:
   invoicer_base: &invoicer_base
-    image: alaksion/invoicer-api:0.0.16
+    image: alaksion/invoicer-api:0.0.20
     environment:
       INVOICER_DB_USERNAME: $INVOICER_DB_USERNAME
       INVOICER_DB_PASSWORD: $INVOICER_DB_PASSWORD
@@ -20,6 +20,9 @@ services:
       INVOICER_LOGSTASH: $INVOICER_LOGSTASH
       INVOICER_KAFKA_BOOTSTRAP_SERVERS: $INVOICER_KAFKA_BOOTSTRAP_SERVERS
       INVOICER_MIN_IO_URL: $INVOICER_MIN_IO_URL
+      KAFKA_LOG_LEVEL: $KAFKA_LOG_LEVEL
+      NETTY_LOG_LEVEL: $NETTY_LOG_LEVEL
+      JETTY_LOG_LEVEL: $JETTY_LOG_LEVEL
     restart: always
     networks:
       - invoicer-network
@@ -156,12 +159,14 @@ services:
     ports:
       - 8083:8080
     depends_on:
-      - kafka1
+      - invoicer-kafka
     environment:
       - KAFKA_CLUSTERS_0_NAME=Invoicer-Cluster
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka1:9092
-  kafka1:
-    container_name: kafka
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=invoicer-kafka:9092
+    networks:
+      - invoicer-network
+  invoicer-kafka:
+    container_name: invoicer-kafka
     image: 'bitnami/kafka:latest'
     ports:
       - 19090:19090
@@ -176,10 +181,12 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
-      - KAFKA_CFG_LISTENERS=INTERNAL://:9092,EXTERNAL://:19090,CONTROLLER://:9094
-      - KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://:9092,EXTERNAL://192.168.0.92:19090
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka1:9094
+      - KAFKA_CFG_LISTENERS=INTERNAL://invoicer-kafka:9092,EXTERNAL://:19090,CONTROLLER://:9094
+      - KAFKA_ADVERTISED_LISTENERS=INTERNAL://invoicer-kafka:9092,EXTERNAL://192.168.0.92:19090
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@invoicer-kafka:9094
       - ALLOW_PLAINTEXT_LISTENER=yes
+    networks:
+      - invoicer-network
 volumes:
   postgres-data:
   redis_data:
