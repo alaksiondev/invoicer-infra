@@ -1,6 +1,6 @@
 services:
   invoicer_base: &invoicer_base
-    image: alaksion/invoicer-api:0.0.15
+    image: alaksion/invoicer-api:0.0.16
     environment:
       INVOICER_DB_USERNAME: $INVOICER_DB_USERNAME
       INVOICER_DB_PASSWORD: $INVOICER_DB_PASSWORD
@@ -19,6 +19,7 @@ services:
       INVOICER_MIN_IO_BUCKET: $INVOICER_MIN_IO_BUCKET
       INVOICER_LOGSTASH: $INVOICER_LOGSTASH
       INVOICER_KAFKA_BOOTSTRAP_SERVERS: $INVOICER_KAFKA_BOOTSTRAP_SERVERS
+      INVOICER_MIN_IO_URL: $INVOICER_MIN_IO_URL
     restart: always
     networks:
       - invoicer-network
@@ -26,14 +27,14 @@ services:
       - invoicer-database
   invoicer-main:
     <<: *invoicer_base
-    container_name: invoicer-api-main
+    container_name: invoicer-service
     ports:
       - "8080:8080"
   invoicer-fallback:
     <<: *invoicer_base
     ports:
       - "8081:8080"
-    container_name: invoicer-api-fallback
+    container_name: invoicer-service-2
   invoicer-database:
     container_name: postgre
     image: postgres:latest
@@ -160,6 +161,7 @@ services:
       - KAFKA_CLUSTERS_0_NAME=Invoicer-Cluster
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka1:9092
   kafka1:
+    container_name: kafka
     image: 'bitnami/kafka:latest'
     ports:
       - 19090:19090
