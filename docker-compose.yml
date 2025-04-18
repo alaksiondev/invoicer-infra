@@ -1,6 +1,6 @@
 services:
   invoicer_base: &invoicer_base
-    image: alaksion/invoicer-api:0.0.23
+    image: alaksion/invoicer-api:0.0.24
     environment:
       INVOICER_DB_USERNAME: $INVOICER_DB_USERNAME
       INVOICER_DB_PASSWORD: $INVOICER_DB_PASSWORD
@@ -13,7 +13,6 @@ services:
       INVOICER_API_PORT: 8080
       INVOICER_REDIS_PORT: 6379
       INVOICER_REDIS_HOST: "invoider-redis"
-      INVOICER_REDIS_TTL: $INVOICER_REDIS_TTL
       INVOICER_MIN_IO_ACCESS_KEY: $INVOICER_MIN_IO_ACCESS_KEY
       INVOICER_MIN_IO_SECRET_KEY: $INVOICER_MIN_IO_SECRET_KEY
       INVOICER_MIN_IO_BUCKET: $INVOICER_MIN_IO_BUCKET
