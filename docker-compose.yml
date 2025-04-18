@@ -20,7 +20,7 @@ services:
       INVOICER_LOGSTASH: $INVOICER_LOGSTASH
       INVOICER_KAFKA_BOOTSTRAP_SERVERS: $INVOICER_KAFKA_BOOTSTRAP_SERVERS
       INVOICER_MIN_IO_URL: $INVOICER_MIN_IO_URL
-      PDF_EXTERNAL_HOST: "http://invoicer-nginx:4000"
+      PDF_EXTERNAL_HOST: $INVOICER_MIN_IO_REDIRECT
     restart: always
     networks:
       - invoicer-network
