@@ -7,10 +7,4 @@ datasources:
   url: http://invoicer-loki:3100
   version: 1
   editable: false
-  jsonData:
-    maxLines: 1000
-    derivedFields:
-      - datasourceUid: 'loki'
-        matcherRegex: 'traceID=(\w+)'
-        name: 'TraceID'
-        url: '$${__value.raw}'
+  uid: loki_123

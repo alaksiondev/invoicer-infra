@@ -19,6 +19,7 @@ services:
       INVOICER_LOGSTASH: "invoicer-logstash:5001"
       INVOICER_KAFKA_BOOTSTRAP_SERVERS: "invoicer-kafka:9092"
       INVOICER_MIN_IO_URL: "http://invoicer-minio:9000"
+      LOKI_URL: "http://invoicer-loki:3100/loki/api/v1/push"
     restart: always
     networks:
       - invoicer-network
@@ -74,6 +75,9 @@ services:
       - invoicer-loki
     networks:
       - invoicer-network
+    volumes:
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+      - grafana-data:/var/lib/grafana
   invoicer-nginx:
     container_name: nginx
     image: nginx:1.27-perl
@@ -168,6 +172,7 @@ volumes:
   loki-data:
   loki-index:
   loki-cache:
+  grafana-data:
 networks:
   invoicer-network:
     driver: bridge
