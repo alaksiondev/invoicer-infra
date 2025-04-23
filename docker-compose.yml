@@ -1,6 +1,6 @@
 services:
   invoicer_base: &invoicer_base
-    image: alaksion/invoicer-api:0.0.24
+    image: alaksion/invoicer-api:0.0.25
     environment:
       INVOICER_DB_USERNAME: $INVOICER_DB_USERNAME
       INVOICER_DB_PASSWORD: $INVOICER_DB_PASSWORD
@@ -10,15 +10,16 @@ services:
       INVOICER_JWT_ISSUER: $INVOICER_JWT_ISSUER
       INVOICER_JWT_SECRET: $INVOICER_JWT_SECRET
       INVOICER_JWT_REALM: $INVOICER_JWT_REALM
-      INVOICER_API_PORT: 8080
+      INVOICER_API_PORT: "8080"
       INVOICER_REDIS_PORT: 6379
-      INVOICER_REDIS_HOST: "invoider-redis"
+      INVOICER_REDIS_HOST: "invoicer-redis"
       INVOICER_MIN_IO_ACCESS_KEY: $INVOICER_MIN_IO_ACCESS_KEY
       INVOICER_MIN_IO_SECRET_KEY: $INVOICER_MIN_IO_SECRET_KEY
       INVOICER_MIN_IO_BUCKET: $INVOICER_MIN_IO_BUCKET
       INVOICER_LOGSTASH: "invoicer-logstash:5001"
       INVOICER_KAFKA_BOOTSTRAP_SERVERS: "invoicer-kafka:9092"
       INVOICER_MIN_IO_URL: "http://invoicer-minio:9000"
+      LOKI_URL: "http://invoicer-loki:3100/loki/api/v1/push"
     restart: always
     networks:
       - invoicer-network
@@ -31,9 +32,9 @@ services:
       - "8080:8080"
   invoicer-fallback:
     <<: *invoicer_base
+    container_name: invoicer-service-2
     ports:
       - "8081:8080"
-    container_name: invoicer-service-2
   invoicer-database:
     container_name: postgre
     image: postgres:latest
@@ -71,8 +72,12 @@ services:
       - "3000:3000"
     depends_on:
       - invoicer-prometheus
+      - invoicer-loki
     networks:
       - invoicer-network
+    volumes:
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+      - grafana-data:/var/lib/grafana
   invoicer-nginx:
     container_name: nginx
     image: nginx:1.27-perl
@@ -93,51 +98,10 @@ services:
       - redis_data:/data
     networks:
       - invoicer-network
-  invoicer-elasticsearch:
-    container_name: invoicer-elasticsearch
-    restart: always
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.1
-    profiles:
-      - log
-    ports:
-      - "9200:9200"
-    networks:
-      - invoicer-network
-    volumes:
-      - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - elastisearch_data:/usr/share/elasticsearch/data
-  invoicer-logstash:
-    container_name: invoicer-logstash
-    restart: always
-    image: docker.elastic.co/logstash/logstash:7.15.1
-    ports:
-      - "5001:5000"
-    networks:
-      - invoicer-network
-    volumes:
-      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-    depends_on:
-      - invoicer-elasticsearch
-    profiles:
-      - log
-  invoicer-kibana:
-    container_name: invoicer-kibana
-    restart: always
-    image: docker.elastic.co/kibana/kibana:7.15.1
-    ports:
-      - "5601:5601"
-    networks:
-      - invoicer-network
-    depends_on:
-      - invoicer-elasticsearch
-    volumes:
-      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
-    profiles:
-      - log
   invoicer-minio:
     image: minio/minio:latest
     container_name: MinIO
-    restart: unless-stopped
+    restart: always
     command: server /data --console-address ":9001"
     environment:
       MINIO_ROOT_USER: $MINIO_USER  
@@ -150,6 +114,7 @@ services:
     networks:
       - invoicer-network
   kafka-ui:
+    restart: always
     container_name: kafka-ui
     image: provectuslabs/kafka-ui:latest
     ports:
@@ -162,6 +127,7 @@ services:
     networks:
       - invoicer-network
   invoicer-kafka:
+    restart: always
     container_name: invoicer-kafka
     image: 'bitnami/kafka:latest'
     ports:
@@ -183,12 +149,33 @@ services:
       - ALLOW_PLAINTEXT_LISTENER=yes
     networks:
       - invoicer-network
+  invoicer-loki:
+    restart: always
+    user: "root" 
+    container_name: loki
+    image: grafana/loki:2.9.3
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki/loki-config.yaml:/etc/loki/loki-config.yaml
+      - loki-data:/loki
+      - loki-index:/loki/boltdb-shipper-active
+      - loki-cache:/loki/boltdb-shipper-cache
+    command: -config.file=/etc/loki/loki-config.yaml
+    environment:
+      - UMASK=0002
+    networks:
+      - invoicer-network
 volumes:
   postgres-data:
   redis_data:
   elastisearch_data:
   minio_data:
   kafka-logs:
+  loki-data:
+  loki-index:
+  loki-cache:
+  grafana-data:
 networks:
   invoicer-network:
     driver: bridge
