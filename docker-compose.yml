@@ -1,6 +1,6 @@
 services:
   invoicer_base: &invoicer_base
-    image: alaksion/invoicer-api:0.0.24
+    image: alaksion/invoicer-api:0.0.25
     environment:
       INVOICER_DB_USERNAME: $INVOICER_DB_USERNAME
       INVOICER_DB_PASSWORD: $INVOICER_DB_PASSWORD
