@@ -1,1 +1,1 @@
-ALTER TABLE T_USER add column identity_provider_uuid varchar(200) UNIQUE DEFAULT null';
+ALTER TABLE T_USER add column identity_provider_uuid varchar(200) UNIQUE DEFAULT null;
