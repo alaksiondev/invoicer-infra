@@ -16,7 +16,6 @@ services:
       INVOICER_MIN_IO_ACCESS_KEY: $INVOICER_MIN_IO_ACCESS_KEY
       INVOICER_MIN_IO_SECRET_KEY: $INVOICER_MIN_IO_SECRET_KEY
       INVOICER_MIN_IO_BUCKET: $INVOICER_MIN_IO_BUCKET
-      INVOICER_LOGSTASH: "invoicer-logstash:5001"
       INVOICER_KAFKA_BOOTSTRAP_SERVERS: "invoicer-kafka:9092"
       INVOICER_MIN_IO_URL: "http://invoicer-minio:9000"
       LOKI_URL: "http://invoicer-loki:3100/loki/api/v1/push"
