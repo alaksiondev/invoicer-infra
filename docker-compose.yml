@@ -25,6 +25,8 @@ services:
       - invoicer-network
     depends_on:
       - invoicer-database
+    volumes:
+      - ./invoicer/configs/firebase-credentials.json:/etc/invoicer/configs/firebase-credentials.json
   invoicer-main:
     <<: *invoicer_base
     container_name: invoicer-service

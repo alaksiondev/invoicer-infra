@@ -1,3 +1,4 @@
 .env
 minio_data
 kraft-logs
+invoicer/configs/*
