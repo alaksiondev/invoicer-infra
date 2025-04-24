@@ -19,6 +19,7 @@ services:
       INVOICER_KAFKA_BOOTSTRAP_SERVERS: "invoicer-kafka:9092"
       INVOICER_MIN_IO_URL: "http://invoicer-minio:9000"
       LOKI_URL: "http://invoicer-loki:3100/loki/api/v1/push"
+      INVOICER_FIREBASE_PROJECT_ID: $INVOICER_FIREBASE_PROJECT_ID
     restart: always
     networks:
       - invoicer-network
