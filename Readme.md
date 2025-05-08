@@ -53,12 +53,18 @@ INVOICER_FIREBASE_PROJECT_ID="your-project-id-here"
 1. Clone this repository
 2. CD into the cloned directory
 3. Populate environment variables
-4. Set MinIO access key and secret key. To do this navigate to localhost:9001, login using MIN_USER and MIN_PASSWORD previously set in the env variables, go to "Access Keys", and create a new access key using INVOICER_MIN_IO_ACCESS_KEY and INVOICER_MIN_IO_SECRET_KEY as values.
+4. Start MinIO service and navigate to localhost:9001.
+5. Login using MIN_USER and MIN_PASSWORD previously set in the env variables
+6. Go to "Access Keys".
+7. Tap `Create Access Key`.
+8. Set `Access key` to the same value used by `INVOICER_MIN_IO_ACCESS_KEY` variable.
+9. Set `Secret key` to the same value used by `INVOICER_MIN_IO_SECRET_KEY` variable.
+10. Set the remaining fields to according to your preferences.
+
 
 ### Firebase Setup
 1. Create a new firebase project
-2. On Authentication section allow Google Sign in method
-3. Go to settings > Service Accounts > Create new private key. Download the file, rename it to `firebase-credentials.json`, and copy it to `invoicer/configs`. Your project should look like `invoicer/configs/firebase-credentials.json`.
+2. Go to settings > Service Accounts > Create new private key. Download the file, rename it to `firebase-credentials.json`, and copy it to `invoicer/configs`. Your project should look like `invoicer/configs/firebase-credentials.json`.
 4. Go to settings -> General. Copy `project id` and set it as `INVOICER_FIREBASE_PROJECT_ID` variable.
 
 ### Last steps
