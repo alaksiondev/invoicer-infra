@@ -48,10 +48,20 @@ INVOICER_FIREBASE_PROJECT_ID="your-project-id-here"
 ```
 
 ## QuickStart
+
+### Container setup
 1. Clone this repository
 2. CD into the cloned directory
 3. Populate environment variables
 4. Set MinIO access key and secret key. To do this navigate to localhost:9001, login using MIN_USER and MIN_PASSWORD previously set in the env variables, go to "Access Keys", and create a new access key using INVOICER_MIN_IO_ACCESS_KEY and INVOICER_MIN_IO_SECRET_KEY as values.
-3. type `docker compose up`
-4. Wait for docker to start the services
-5. Have fun
+
+### Firebase Setup
+1. Create a new firebase project
+2. On Authentication section allow Google Sign in method
+3. Go to settings > Service Accounts > Create new private key. Download the file, rename it to `firebase-credentials.json`, and copy it to `invoicer/configs`. Your project should look like `invoicer/configs/firebase-credentials.json`.
+4. Go to settings -> General. Copy `project id` and set it as `INVOICER_FIREBASE_PROJECT_ID` variable.
+
+### Last steps
+1. type `docker compose up`
+2. Wait for docker to start the services
+3. Have fun
