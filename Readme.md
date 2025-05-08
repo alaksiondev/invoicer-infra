@@ -2,6 +2,7 @@
 
 ### Requirements
 - Docker CLI
+- Firebase Project
 
 
 ## Default ports used by Invoicer
@@ -14,54 +15,43 @@ If you are to use the default port configuration please assure the following por
 - 9090: Prometheus
 - 3000: Grafana
 - 4000: Nginx
-- 9200: ElasticSearch (Will be removed soon)
-- 5001: Logstash (Will be removed soon)
-- 5601: Kibana (Will be removed soon)
+- 3100: Loki
 - 19090: Kafka
 - 8083: Kafa UI
-- 9000, 9001: Min IO
+- 9000,
+- 9001: Min IO
 
 ## Environment Variables
-Invoicer infrastructure is powered by a DockerCompose file and some configurations have been moved into env variables. To ensure the deploy works as expected be sure to setup the required envinroment variables.
+Invoicer infrastructure is powered by a DockerCompose file and most configurations have been moved into env variables. To ensure the deploy works as expected be sure to setup the required envinroment variables.
 
 For convenience paste the default configuration below into a `.env` file.
 
 ```yml
+ # SERVICE
  INVOICER_DB_USERNAME=invoicerDev
  INVOICER_DB_PASSWORD=6b9364d4-0f75-47dd-bb5a-4fd4bd51c631
  INVOICER_DB_NAME=postgres
- INVOICER_DB_URL=jdbc:postgresql://invoicer-database:5432/postgres
  INVOICER_JWT_AUDIENCE=sample_audience
  INVOICER_JWT_ISSUER=sample_issuer
  INVOICER_JWT_SECRET=sample_secret
  INVOICER_JWT_REALM=invoicer
  INVOICER_REDIS_HOST=invoicer-redis
- INVOICER_REDIS_PORT=6379
- INVOICER_REDIS_TTL=3600000
- INVOICER_API_PORT=8080
- INVOICER_LOGSTASH="invoicer-logstash:5001"
- #MIN_IO
- MINIO_USER=invoicer
- MINIO_PASSWORD=6b9364d4-0f75-47dd-bb5a-4fd4bd51c631
  INVOICER_MIN_IO_ACCESS_KEY=YW8iWM4zvnYoniv6n3cO
  INVOICER_MIN_IO_SECRET_KEY=kcl16tB2HnbMR2PdLfWtU61kVKhHnvHPw3PRm0vu
  INVOICER_MIN_IO_BUCKET="invoice-pdfs"
- INVOICER_MIN_IO_URL="http://invoicer-minio:9000"
+ #MIN_IO
+ MINIO_USER=invoicer
+ MINIO_PASSWORD=6b9364d4-0f75-47dd-bb5a-4fd4bd51c631
  #Kafka
-INVOICER_KAFKA_BOOTSTRAP_SERVERS="invoicer-kafka:9092"
-# Log
-KAFKA_LOG_LEVEL="WARN"
-NETTY_LOG_LEVEL="INFO"
-JETTY_LOG_LEVEL="INFO"
+KAFKA_EXTERNAL_URL="192.168.0.205:19090"
+INVOICER_FIREBASE_PROJECT_ID="your-project-id-here"
 ```
 
 ## QuickStart
-- Clone this repository
--  CD into the cloned directory
-- ❗❗ IMPORTANT ❗❗
-  - Go to `docker-compose.yml` file
-  - Navigate to lines 184 and 185
-  - Replace `192.168.0.205` with the local IPv4 of your local machine
-5. type `docker compose up`
-6. Wait for docker to start the services
-7. Have fun
+1. Clone this repository
+2. CD into the cloned directory
+3. Populate environment variables
+4. Set MinIO access key and secret key. To do this navigate to localhost:9001, login using MIN_USER and MIN_PASSWORD previously set in the env variables, go to "Access Keys", and create a new access key using INVOICER_MIN_IO_ACCESS_KEY and INVOICER_MIN_IO_SECRET_KEY as values.
+3. type `docker compose up`
+4. Wait for docker to start the services
+5. Have fun
