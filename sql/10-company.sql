@@ -1,6 +1,7 @@
 
 create table if not exists t_user_company(
 	id uuid primary key default gen_random_uuid(),
+	name varchar (500) not null,
 	registration_document varchar(100) not null,
 	created_at timestamp not null default CURRENT_DATE,
 	updated_at timestamp not null default CURRENT_DATE,
