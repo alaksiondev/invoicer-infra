@@ -52,3 +52,6 @@ CREATE TABLE IF NOT EXISTS t_invoice_activity(
             references t_invoice(id)
             ON DELETE CASCADE
 );
+
+ALTER TABLE t_invoice ADD COLUMN company_email varchar(255) NOT NULL;
+
