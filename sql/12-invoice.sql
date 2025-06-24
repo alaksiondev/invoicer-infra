@@ -53,5 +53,4 @@ CREATE TABLE IF NOT EXISTS t_invoice_activity(
             ON DELETE CASCADE
 );
 
-ALTER TABLE t_invoice ADD COLUMN company_email varchar(255) default null;
-
+ALTER TABLE t_invoice ADD COLUMN company_email varchar(255) default '';
